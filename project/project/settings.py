@@ -3,9 +3,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 PROJECT_ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'n^5(h87h-alb8@0uyp*ptb$p&4vp$$8hz&38szwhv@=78umr18'
 
@@ -42,11 +39,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'project.urls'
 
 WSGI_APPLICATION = 'project.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
