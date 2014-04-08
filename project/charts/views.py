@@ -17,7 +17,6 @@ def demo(request):
                 'houston_temp',
                 'boston_temp']}
              ])
-    print weatherdata
     #Step 2: Create the Chart object
     cht = Chart(
             datasource = weatherdata,
@@ -38,6 +37,4 @@ def demo(request):
                        'text': 'Month number'}}})
 
     #Step 3: Send the chart object to the template.
-    print '****'
-    print cht
     return render_to_response('charts/demo.html', {'weatherchart':cht})
