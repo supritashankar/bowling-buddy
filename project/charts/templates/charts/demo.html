@@ -1,9 +1,10 @@
+{% load staticfiles %}
 <html>
 <head>
-    <script data-rocketsrc="static/js/jquery.min.js" type="text/rocketscript"></script>
-    <script data-rocketsrc="/static/js/highcharts.js" type="text/rocketscript"></script>
-    <script data-rocketsrc="/static/js/default.js" type="text/rocketscript"></script>
-    {% load chartit %}
+   <script src="{% static "js/jquery.min.js" %}"></script>
+   <script src="{% static "js/default.js" %}"></script>
+   <script src="{% static "js/highcharts.js" %}"></script>
+   {% load chartit %}
     {{ weatherchart|load_charts:"container" }}
 </head>
 <body>
