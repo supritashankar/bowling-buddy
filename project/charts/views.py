@@ -1,7 +1,11 @@
 from django.shortcuts import render
 from chartit import DataPool, Chart
+from django.shortcuts import render_to_response
 
-def weather_chart_view(request):
+from django.template import RequestContext
+from charts.models import *
+
+def demo(request):
     #Step 1: Create a DataPool with the data we want to retrieve.
     weatherdata = \
         DataPool(
@@ -13,7 +17,7 @@ def weather_chart_view(request):
                 'houston_temp',
                 'boston_temp']}
              ])
-
+    print weatherdata
     #Step 2: Create the Chart object
     cht = Chart(
             datasource = weatherdata,
@@ -34,5 +38,6 @@ def weather_chart_view(request):
                        'text': 'Month number'}}})
 
     #Step 3: Send the chart object to the template.
-    'weatherchart': cht
-    return render_to_response('charts/demo.html', locals(), RequestContext(request))
+    print '****'
+    print cht
+    return render_to_response('charts/demo.html', {'weatherchart':cht})

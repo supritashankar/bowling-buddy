@@ -1,0 +1,11 @@
+<html>
+<head>
+    <script data-rocketsrc="static/js/jquery.min.js" type="text/rocketscript"></script>
+    <script data-rocketsrc="/static/js/highcharts.js" type="text/rocketscript"></script>
+    <script data-rocketsrc="/static/js/default.js" type="text/rocketscript"></script>
+    {% load chartit %}
+    {{ weatherchart|load_charts:"container" }}
+</head>
+<body>
+    <div id='container'> Chart will be rendered here </div>
+</body>
