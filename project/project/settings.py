@@ -25,6 +25,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'charts',
     'chartit',
+    'plotdata',
 )
 
 MIDDLEWARE_CLASSES = (
