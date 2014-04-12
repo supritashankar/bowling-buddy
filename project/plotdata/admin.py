@@ -1,3 +1,4 @@
 from django.contrib import admin
+from plotdata.models import BowlingData
 
-# Register your models here.
+admin.site.register(BowlingData)
