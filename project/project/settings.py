@@ -7,7 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'n^5(h87h-alb8@0uyp*ptb$p&4vp$$8hz&38szwhv@=78umr18'
-
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
