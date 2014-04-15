@@ -6,19 +6,21 @@ from plotdata.models import *
 
 def homepage(request):
 
-  """ Homepage which will display all the the different times of bowls """
+  """ Homepage which will display all the the different strikes - from which one has to be chosen """
   return render_to_response('plotdata/homepage.html')
 
 def data(request, round):
 
   """ Data that will display results of a particular round """
   """ For SD card on Desktop f = open("/Volumes/NO\ NAME/1.txt", "r") """
+
   time_elapsed = []
   x_axis = []
   y_axis = []
   z_axis = []
   twist = []
   bend = []
+
   with open('../../1.TXT') as f:
     for line in f:
         time_elapsed = line.split(',')[0]
@@ -44,6 +46,7 @@ def data(request, round):
                 'yvalue']}
              ])
 
+
   cht = Chart(
             datasource = bowlingdata,
             series_options =
@@ -61,4 +64,5 @@ def data(request, round):
                'xAxis': {
                     'title': {
                        'text': 'Time elapsed'}}}) 
+
   return render_to_response('plotdata/data.html', {'datachart':cht})
