@@ -35,6 +35,16 @@ def data(request, round):
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
 
+
+
+  chart = get_chart()
+  return render_to_response('plotdata/data.html', {'datachart':chart})
+
+def get_chart():
+
+  """ Return the data in the proper format needed for the charts """
+
+
   bowlingdata = \
         DataPool(
            series=
@@ -64,5 +74,4 @@ def data(request, round):
                'xAxis': {
                     'title': {
                        'text': 'Time elapsed'}}}) 
-
-  return render_to_response('plotdata/data.html', {'datachart':cht})
+  return cht
