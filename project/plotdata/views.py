@@ -32,13 +32,13 @@ def data(request, round):
         twist 	     = line.split(',')[3]
         bend         = line.split(',')[4]
       
-       """ Do some math to get it in the correct units """
-       xval = xval/16384
-       yval = yval/16384
-       zval = zval/16384
+        """ Do some math to get it in the correct units """
+        xval = xval/16384
+        yval = yval/16384
+        zval = zval/16384
 
-       wrist = (wrist*180)/math.pi 
-       BowlingData.objects.create(time_elapsed = time_elapsed, xvalue = xval, yvalue = yval, zvalue = zval, twist = twist, bend = bend)
+        wrist = (twist*180)/math.pi 
+        BowlingData.objects.create(time_elapsed = time_elapsed, xvalue = xval, yvalue = yval, zvalue = zval, twist = twist, bend = bend)
 
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
