@@ -6,5 +6,4 @@ from django.shortcuts import render_to_response
 def homepage(request):
 
   """ Homepage which will display all the the different times of bowls """
-
   return render_to_response('plotdata/homepage.html')
