@@ -1,1 +1,1 @@
-web: python bowling-buddy/project/manage.py runserver
+web: gunicorn --pythonpath='bowling-buddy/project/' project.wsgi
