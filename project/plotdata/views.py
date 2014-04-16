@@ -23,7 +23,7 @@ def data(request, round):
   twist = []
   bend = []
 
-  with open('../../1.TXT') as f:
+  with open('../../sdcard/1.TXT') as f:
     for line in f:
         time_elapsed = line.split(',')[0]
         xval 	     = line.split(',')[0]
