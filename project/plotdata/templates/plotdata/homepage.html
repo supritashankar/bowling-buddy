@@ -1,1 +1,29 @@
-Helllo Welcome to the bowling buddies!!!!
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Example Client</title>
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" href="{% static "css/bootstrap-theme.min.css" %}" />
+    <style>
+      body {
+        padding-top: 20px;
+        padding-left: 20px;
+      }
+    </style>
+    <link href='http://fonts.googleapis.com/css?family=Balthazar' rel='stylesheet' type='text/css'>
+<body>
+<div class="page-header">
+  <h1>Bowling Buddy <small> Choose your strike</small></h1>
+</div>
+<div class="container">
+<button type="button" class="btn btn-primary">Round 1</button>
+<button type="button" class="btn btn-primary">Round 2</button>
+<button type="button" class="btn btn-primary">Round 3</button>
+</div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+</body>
+</html>
