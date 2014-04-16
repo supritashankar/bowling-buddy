@@ -28,8 +28,9 @@ THE SOFTWARE.
 */
 
 // todo:
-// error if SD card size < size needed? (need to get this threshold)
 // button-state = 0 is too sensitive for first press?
+// 5 seconds too long or short?
+// need tracker calibration once on glove
 
 // notes:
 // use charging push button as reset for error or SD overflow
@@ -62,12 +63,13 @@ MPU6050  mpu; // a reference to the accelerometer class
 File results; // a reference to a file descriptor on SD card
 
 // Processor state/control vars:
-int button_state      = 0; // current state of the push button
-int last_button_state = 0; // previous state of the push button
-bool blink_state  = false; // a simple flag to flash green LED when ready for SD card
-uint8_t  swing_count  = 1; // keeps track of which swing we are on (MAX = 255)
-unsigned long record_time; // a marker for the start of a record time
-bool record = false;       // a flag to say when we are recording
+int button_state      = 0;  // current state of the push button
+int last_button_state = 0;  // previous state of the push button
+bool blink_state  = false;  // a simple flag to flash green LED when ready for SD card
+uint8_t  swing_count  = 1;  // keeps track of which swing we are on (MAX = 255)
+elapsedMillis record_time;  // the current time of the record phase
+unsigned long record_start; // a marker for the start of a record time
+bool record = false;        // a flag to say when we are recording
 
 // MPU state/control vars:
 uint8_t  mpu_interrupt_status; // holds actual interrupt status byte from MPU
@@ -82,6 +84,22 @@ VectorInt16 aa;         // [x, y, z]            accel sensor measurements
 VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
 VectorFloat gravity;    // [x, y, z]            gravity vector
 float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+
+// ================================================================
+// ===                 SD CARD CONNECTION TEST                  ===
+// ================================================================
+
+bool SD_connection_test() {
+  // open a test file
+  results = SD.open("TEST.TXT", FILE_WRITE);
+  if (!results) {
+    return false;
+  }
+  // if file correclty opened, close, remove, and exit
+  results.close();
+  SD.remove("TEST.TXT");
+  return true;
+}
 
 // ================================================================
 // ===                      INITIAL SETUP                       ===
@@ -119,17 +137,14 @@ void setup() {
         // blink LED to ask for SD card
         blink_state = !blink_state;
         digitalWrite(GREEN_LED_PIN, blink_state);
-        delay(250); // wait 
       } else {
         break;
       }
     }
-    results = SD.open("1.TXT", FILE_WRITE); // first swing
-    if (!results) {
-      error = true;
-    } else {
-      digitalWrite(GREEN_LED_PIN, HIGH); // all-clear signal
-    }
+    // remove old files
+    SD.remove("1.TXT"); SD.remove("2.TXT"); SD.remove("3.TXT");
+    SD.remove("4.TXT"); SD.remove("5.TXT");
+    digitalWrite(GREEN_LED_PIN, HIGH); // all-clear signal
   }
 }
 
@@ -154,6 +169,12 @@ void loop() {
     digitalWrite(ERROR_LED_PIN, LOW);
   }
   
+  // if NOT recording, make sure SD card is connected before continuing
+  if (!record && !SD_connection_test()) {
+    error = true;
+    return; 
+  }
+  
   // read from button pin
   button_state = digitalRead(BUTTON_PIN);
 
@@ -164,25 +185,12 @@ void loop() {
         // set flag and get start of swing recording
         Serial.print("start...");
         record = true;
-        record_time = millis();
-      } 
-    }
-    // save the current state as the last state
-    last_button_state = button_state; 
-  } else {
-    // see if we are done recording
-    if ((millis() - record_time) >= RECORD_LIMIT) {
-      record = false;
-      Serial.println("done");
-      swing_count++; // make next swing
-      // close SD card file
-      results.close();
-      // try to open another file on SD card
-      if (swing_count > MAX_SWINGS) {
-        error = true;
-        return; 
-      } else {
+        record_start = record_time; // checkpoint time
+        // open swing file
         switch (swing_count) {
+          case 1:
+            results = SD.open("1.TXT", FILE_WRITE);
+            break;
           case 2:
             results = SD.open("2.TXT", FILE_WRITE);
             break;
@@ -198,9 +206,25 @@ void loop() {
         }
         if (!results) {
           error = true;
-          return;
+          return; 
         }
-      }
+      } 
+    }
+    // save the current state as the last state
+    last_button_state = button_state; 
+  } else {
+    // see if we are done recording
+    if ((record_time - record_start) >= RECORD_LIMIT) {
+      record = false;
+      Serial.println("done");
+      swing_count++; // goto next swing
+      // close results file
+      results.close();
+      // try to open another file on SD card
+      if (swing_count > MAX_SWINGS) {
+        error = true;
+        return; 
+      } 
     // else, we are recording!
     } else {
       // get INT_STATUS byte
@@ -232,21 +256,21 @@ void loop() {
         // make a string for assembling the data to log:
         String data_string = "";
         // 1) add time since program running (in milliseconds)
-        data_string += String(millis());
+        data_string += String(record_time, DEC);
         data_string += ",";
         // 2) x, y, and z acceleration
-        data_string += String(aaReal.x);
+        data_string += String(aaReal.x); // in g's (divide by 16384 to get m/s^s)
         data_string += ",";
-        data_string += String(aaReal.y);
+        data_string += String(aaReal.y); // in g's (divide by 16384 to get m/s^s)
         data_string += ",";
-        data_string += String(aaReal.z);
+        data_string += String(aaReal.z); // in g's (divide by 16384 to get m/s^s)
         data_string += ",";
         // 3) yaw, pitch, roll in degrees
-        data_string += String(ypr[0] * 180/M_PI); // yaw (z-axis)
+        data_string += String(ypr[0]); // yaw (z-axis) in radians
         data_string += ",";
-        data_string += String(ypr[1] * 180/M_PI); // pitch (y-axis)
+        data_string += String(ypr[1]); // pitch (y-axis) in radians
         data_string += ",";
-        data_string += String(ypr[2] * 180/M_PI); // roll (x-axis)
+        data_string += String(ypr[2]); // roll (x-axis) in radians
         // write data to SD card file
         results.println(data_string);
       }
