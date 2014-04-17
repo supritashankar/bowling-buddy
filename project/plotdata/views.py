@@ -24,13 +24,15 @@ def data(request, round):
   twist = []
   bend = []
   
-  no_of_files = len([name for name in os.listdir('.') if os.path.isfile(name)])
+  no_of_files = len([name for name in os.listdir('../../sdcard/') if os.path.isfile(name)])
   
-  if no_of_files > 21:
+  if no_of_files > 21 or no_of_files == 0:
     return render_to_response('plotdata/error.html')
- 
-  with open('../../sdcard/1.TXT') as f:
-    for line in f:
+
+  for name in os.listdir('../../sdcard/'):
+    if os.path.isfile(name) and os.stat(name)[6]==0: 
+      with open('../../sdcard/1.TXT') as f:
+       for line in f:
         time_elapsed = line.split(',')[0]
         xval 	     = line.split(',')[0]
         yval 	     = line.split(',')[1]

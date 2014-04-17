@@ -1,8 +1,8 @@
 1. Find out the average for the noise
 2. Get the distance - do integration
 3. Let them choose the bowl. 
-[out of 21 in max case] if more than 21 then there is an error
-4. Intially itself check the file
+[out of 21 in max case] if more than 21 then there is an error - done
+4. Intially itself check the file - done
 5. At a time display only 2 graphs
-6. Atleast hv one file in the SD card, otherwise there is an error.
+6. Atleast hv one file in the SD card, otherwise there is an error. - done
 7. Setup Travis
