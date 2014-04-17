@@ -34,11 +34,11 @@ def data(request, round):
       with open('../../sdcard/1.TXT') as f:
        for line in f:
         time_elapsed = line.split(',')[0]
-        xval 	     = line.split(',')[0]
-        yval 	     = line.split(',')[1]
-        zval         = line.split(',')[2]
-        twist 	     = line.split(',')[3]
-        bend         = line.split(',')[4]
+        xval 	     = line.split(',')[1]
+        yval 	     = line.split(',')[2]
+        zval         = line.split(',')[3]
+        twist 	     = line.split(',')[4]
+        bend         = line.split(',')[5]
       
         """ Do some math to get it in the correct units """
         xval = xval/16384
