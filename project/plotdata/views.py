@@ -1,4 +1,5 @@
 import math
+import os, os.path
 
 from django.shortcuts import render
 from django.shortcuts import render_to_response
@@ -22,7 +23,12 @@ def data(request, round):
   z_axis = []
   twist = []
   bend = []
-
+  
+  no_of_files = len([name for name in os.listdir('.') if os.path.isfile(name)])
+  
+  if no_of_files > 21:
+    return render_to_response('plotdata/error.html')
+ 
   with open('../../sdcard/1.TXT') as f:
     for line in f:
         time_elapsed = line.split(',')[0]
@@ -42,7 +48,6 @@ def data(request, round):
 
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
-
 
 
   chart = get_chart()
