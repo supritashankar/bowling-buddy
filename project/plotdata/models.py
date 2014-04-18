@@ -9,6 +9,8 @@ class BowlingData(models.Model):
   zvalue       = models.IntegerField()
   twist        = models.DecimalField(max_digits = 9, decimal_places = 3)
   bend         = models.DecimalField(max_digits = 9, decimal_places = 3)
+  date_saved   = models.DateField(help_text='Date recorded')
+  frame_num    = models.CharField(max_length = 2)
 
   def __unicode__(self):
     return "This is the values for this " + str(self.id)

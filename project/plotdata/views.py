@@ -98,5 +98,6 @@ def get_chart():
 @login_required
 def save(request, query):
   """ Function that save the frames in the DB for future retrieval"""
-  
+  frames = query.split('&')
+    
   return render_to_response('plotdata/save.html')
