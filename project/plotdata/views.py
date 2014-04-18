@@ -99,5 +99,27 @@ def get_chart():
 def save(request, query):
   """ Function that save the frames in the DB for future retrieval"""
   frames = query.split('&')
-    
+ 
+  for frame in frames:
+    file = frame + ".TXT"
+    with open('../../sdcard/' + file) as f:
+       for line in f:
+        time_elapsed = line.split(',')[0]
+        xval         = line.split(',')[1]
+        yval         = line.split(',')[2]
+        zval         = line.split(',')[3]
+        twist        = line.split(',')[4]
+        bend         = line.split(',')[5]
+
+        """ Do some math to get it in the correct units """
+        xval = xval/16384
+        yval = yval/16384
+        zval = zval/16384
+
+        wrist = (twist*180)/math.pi
+        BowlingData.objects.create(time_elapsed = time_elapsed, 
+ 				   xvalue = xval, yvalue = yval, 
+				   zvalue = zval, twist = twist, 
+				   bend = bend, frame_num = frame)
+ 
   return render_to_response('plotdata/save.html')
