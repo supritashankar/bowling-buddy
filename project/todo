@@ -1,4 +1,4 @@
-1. Find out the average for the noise
+1. Find out the average for the noise - all 0
 2. Get the distance - do integration
 3. Let them choose the bowl. 
 [out of 21 in max case] if more than 21 then there is an error - done
@@ -6,3 +6,6 @@
 5. At a time display only 2 graphs
 6. Atleast hv one file in the SD card, otherwise there is an error. - done
 7. Setup Travis
+8. Choose only 2 swings
+9. Display results for which swing chosen
+10. Save some of the swings for future retrieval.

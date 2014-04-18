@@ -9,10 +9,13 @@ from plotdata.models import BowlingData
 
 def homepage(request):
 
-  """ Homepage which will display all the the different strikes - from which one has to be chosen """
-  return render_to_response('plotdata/homepage.html')
+  """ Homepage which will display all the the different strikes - from which 2 has to be chosen for comparison """
+  frames = []
+  for index,name in enumerate(os.listdir('../../sdcard/')):
+    frames.append(str(index))
+  return render_to_response('plotdata/homepage.html', locals())
 
-def data(request, round):
+def data(request, frame1, frame2):
 
   """ Data that will display results of a particular round """
   """ For SD card on Desktop f = open("/Volumes/NO\ NAME/1.txt", "r") """
@@ -90,3 +93,8 @@ def get_chart():
                     'title': {
                        'text': 'Time elapsed'}}}) 
   return cht
+
+def save(request, query):
+  """ Function that save the frames in the DB for future retrieval"""
+
+  return render_to_response('plotdata/save.html')

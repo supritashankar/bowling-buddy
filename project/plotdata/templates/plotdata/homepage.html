@@ -19,11 +19,22 @@
   <h1>Bowling Buddy <small> Choose your strike</small></h1>
 </div>
 <div class="container">
-<button type="button" class="btn btn-primary">Round 1</button>
-<button type="button" class="btn btn-primary">Round 2</button>
-<button type="button" class="btn btn-primary">Round 3</button>
+<div class="input-group">
+ {% for frame in frames  %}
+   <input type="checkbox">Frame {{frame}}</input>
+ {% endfor %}
+</div>
+<button type="button" id='C' class="btn btn-primary">Compare Swings</button>
+<button type="button" id='S' class="btn btn-primary">Save swing</button>
 </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <script>
+    $('#C').on('click', function (e) {
+           location.href = "http://127.0.0.1:8000/plotdata/compare/1/2/";
+    })
+    $('#S').on('click', function (e) {
+           location.href = "http://127.0.0.1:8000/game/save/";
+    })
 </body>
 </html>
