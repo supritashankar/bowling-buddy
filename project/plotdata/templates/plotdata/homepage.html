@@ -37,12 +37,16 @@
            location.href = "http://127.0.0.1:8000/plotdata/compare/" + frames;
     })
     $('#S').on('click', function (e) {
-           location.href = "http://127.0.0.1:8000/game/save/";
+           swings = frames.split('/')
+  	   url = swings[0]
+           for (var i=1;i<swings.length-1;i++)
+           { url = url + "&" + swings[i]; }
+           location.href = "http://127.0.0.1:8000/plotdata/save/" + url;
     })
     function compare_frame(frame){
       frames = frames + frame + "/"
       count = count + 1;
-      if (count > 2){ alert("You can select only 2"); }
+      if (count > 2){ alert("You can select only 2 for comparison!! But you can select more for saving!"); }
     }
     </script>
 </body>

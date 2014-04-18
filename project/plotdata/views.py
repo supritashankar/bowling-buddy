@@ -96,5 +96,5 @@ def get_chart():
 
 def save(request, query):
   """ Function that save the frames in the DB for future retrieval"""
-
+  
   return render_to_response('plotdata/save.html')
