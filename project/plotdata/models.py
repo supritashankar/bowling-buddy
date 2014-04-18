@@ -9,7 +9,7 @@ class BowlingData(models.Model):
   zvalue       = models.IntegerField()
   twist        = models.DecimalField(max_digits = 9, decimal_places = 3)
   bend         = models.DecimalField(max_digits = 9, decimal_places = 3)
-  created      = models.DateField(auto_now_add=True)
+  created      = models.DateTimeField(auto_now_add=True)
   frame_num    = models.CharField(max_length = 2)
 
   def __unicode__(self):

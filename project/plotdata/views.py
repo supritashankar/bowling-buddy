@@ -16,20 +16,15 @@ def homepage(request):
     frames.append(str(index))
   return render_to_response('plotdata/homepage.html', locals())
 
+@login_required
 def data(request, frame1, frame2):
 
   """ Data that will display results of a particular round """
   """ For SD card on Desktop f = open("/Volumes/NO\ NAME/1.txt", "r") """
 
-  time_elapsed = []
-  x_axis = []
-  y_axis = []
-  z_axis = []
-  twist = []
-  bend = []
-  
-  no_of_files = len([name for name in os.listdir('../../sdcard/') if os.path.isfile(name)])
-  
+ 
+  no_of_files = len([name for name in os.listdir('../../sdcard/')])
+   
   if no_of_files > 21 or no_of_files == 0:
     return render_to_response('plotdata/error.html')
 
@@ -50,7 +45,11 @@ def data(request, frame1, frame2):
         zval = zval/16384
 
         wrist = (twist*180)/math.pi 
-        BowlingData.objects.create(time_elapsed = time_elapsed, xvalue = xval, yvalue = yval, zvalue = zval, twist = twist, bend = bend)
+ 	file = name.split('.')[0]
+        BowlingData.objects.create(time_elapsed = time_elapsed, 
+			 	   xvalue = xval, yvalue = yval, 
+				   zvalue = zval, twist = twist, 
+			           bend = bend, frame_num=file)
 
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
