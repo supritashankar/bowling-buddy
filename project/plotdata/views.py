@@ -4,6 +4,7 @@ import os, os.path
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from chartit import DataPool, Chart
+from django.contrib.auth.decorators import login_required
 
 from plotdata.models import BowlingData
 
@@ -94,6 +95,7 @@ def get_chart():
                        'text': 'Time elapsed'}}}) 
   return cht
 
+@login_required
 def save(request, query):
   """ Function that save the frames in the DB for future retrieval"""
   
