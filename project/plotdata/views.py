@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from plotdata.models import BowlingData
 
+@login_required
 def homepage(request):
 
   """ Homepage which will display all the the different strikes - from which 2 has to be chosen for comparison """
