@@ -122,3 +122,9 @@ def save(request, query):
 				   bend = bend, frame_num = frame)
  
   return render_to_response('plotdata/save.html')
+
+@login_required
+def search(request, from_date, to_date):
+  """ Given a from_date and to_date - display all the frames of that given frame """
+
+  return render_to_response('plotdata/search.html') 
