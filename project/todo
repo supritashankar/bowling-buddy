@@ -9,3 +9,8 @@
 8. Choose only 2 swings
 9. Display results for which swing chosen
 10. Save some of the swings for future retrieval.
+
+-----
+1. Display 2 graphs in one page
+2. Do the twist and bend - Twist will be over the whole range and the output is only 1 value; bend is also 1 value
+3. Get the avg velocity

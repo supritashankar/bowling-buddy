@@ -12,6 +12,7 @@ from plotdata.models import BowlingData
 def homepage(request):
 
   """ Homepage which will display all the the different strikes - from which 2 has to be chosen for comparison """
+
   frames = []
   for index,name in enumerate(os.listdir('../../sdcard/')):
     frames.append(str(index))
@@ -28,10 +29,11 @@ def data(request, frame1, frame2):
    
   if no_of_files > 21 or no_of_files == 0:
     return render_to_response('plotdata/error.html')
-
-  for name in os.listdir('../../sdcard/'):
-    if os.path.isfile(name) and os.stat(name)[6]==0: 
-      with open('../../sdcard/1.TXT') as f:
+  
+  frame = frame1 + 1 #Because you storing the index of the array - increment by 1 to get the actual text file
+  for i in range(0,2):
+      file = frame + ".TXT" 
+      with open('../../sdcard/' + file) as f:
        for line in f:
         time_elapsed = line.split(',')[0]
         xval 	     = line.split(',')[1]
@@ -45,13 +47,15 @@ def data(request, frame1, frame2):
         yval = yval/16384
         zval = zval/16384
 
-        wrist = (twist*180)/math.pi 
+        wrist = (twist*180)/math.pi
+        print wrist 
  	file = name.split('.')[0]
         BowlingData.objects.create(time_elapsed = time_elapsed, 
 			 	   xvalue = xval, yvalue = yval, 
 				   zvalue = zval, twist = twist, 
 			           bend = bend, frame_num=file)
-
+        frame = frame2
+     
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
 
