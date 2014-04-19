@@ -16,7 +16,7 @@
     <link href='http://fonts.googleapis.com/css?family=Balthazar' rel='stylesheet' type='text/css'>
 <body>
 <div class="page-header">
-  <h1>Bowling Buddy <small> Choose your strike</small></h1>
+  <h1>Bowling Buddy <small> Choose your frame</small></h1>
 </div>
 <div class="container">
 <div class="input-group">
@@ -24,8 +24,25 @@
    <input type="checkbox" onclick="compare_frame({{frame}})">Frame {{frame}}</input>
  {% endfor %}
 </div>
-<button type="button" id='C' class="btn btn-primary">Compare Swings</button>
-<button type="button" id='S' class="btn btn-primary">Save swing</button>
+<button type="button" id="C" class="btn btn-default">
+  <span class="glyphicon glyphicon-star"></span> Compare
+</button>
+<!-- <button type="button" id='S' class="btn">Save swing</button> -->
+<div class="row">
+  <div class="col-lg-2">
+    <div class="input-group">
+      <span class="input-group-addon">
+	 {% for frame in frames  %}
+           <input type="checkbox" onclick="compare_frame({{frame}})">Frame {{frame}}</input>
+          {% if forloop.counter|divisibleby:loopcounter %}
+          </span>
+	  <span class="input-group-addon">
+          {% endif %}
+         {% endfor %}
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div>
 </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="{% static "js/bootstrap.min.js" %}"></script>
