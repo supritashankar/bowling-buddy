@@ -19,14 +19,6 @@
   <h1>Bowling Buddy <small> Choose your frame</small></h1>
 </div>
 <div class="container">
-<div class="input-group">
- {% for frame in frames  %}
-   <input type="checkbox" onclick="compare_frame({{frame}})">Frame {{frame}}</input>
- {% endfor %}
-</div>
-<button type="button" id="C" class="btn btn-default">
-  <span class="glyphicon glyphicon-star"></span> Compare
-</button>
 <!-- <button type="button" id='S' class="btn">Save swing</button> -->
 <div class="row">
   <div class="col-lg-2">
@@ -34,15 +26,18 @@
       <span class="input-group-addon">
 	 {% for frame in frames  %}
            <input type="checkbox" onclick="compare_frame({{frame}})">Frame {{frame}}</input>
-          {% if forloop.counter|divisibleby:loopcounter %}
-          </span>
-	  <span class="input-group-addon">
+          {% if forloop.counter|divisibleby:3 %}
+          <br/>
           {% endif %}
          {% endfor %}
       </span>
     </div><!-- /input-group -->
   </div><!-- /.col-lg-6 -->
 </div>
+</div>
+<button type="button" id="C" class="btn btn-default">
+  <span class="glyphicon glyphicon-star"></span> Compare
+</button>
 </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="{% static "js/bootstrap.min.js" %}"></script>

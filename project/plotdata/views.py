@@ -54,7 +54,6 @@ def data(request, frame1, frame2):
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
 
-  loopcounter = 3
   chart = get_chart()
   return render_to_response('plotdata/data.html', {'datachart':chart})
 
