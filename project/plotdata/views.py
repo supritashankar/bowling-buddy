@@ -26,35 +26,58 @@ def data(request, frame1, frame2):
 
  
   no_of_files = len([name for name in os.listdir('../../sdcard/')])
-   
+  bend = []
+  twist = []
+  xvalues = []
+  yvalues = []
+  zvalues = []
+ 
   if no_of_files > 21 or no_of_files == 0:
     return render_to_response('plotdata/error.html')
    
   frame = str(int(frame1) + 1) #Because you storing the index of the array - increment by 1 to get the actual text file
   for i in range(0,2):
-      file = frame + ".TXT" 
+      file = frame + ".TXT"
+ 
       with open('../../sdcard/' + file) as f:
-       for line in f:
+       file_len = len(f.readlines())
+
+      with open('../../sdcard/' + file) as f:
+
+       twist_angle = 0.0
+       bend_angle  = 0.0
+
+       for index, line in enumerate(f):
         time_elapsed = line.split(',')[0]
         xval 	     = int(line.split(',')[1])
         yval 	     = int(line.split(',')[2])
         zval         = int(line.split(',')[3])
-        twist 	     = line.split(',')[4]
-        bend         = line.split(',')[5]
+        twist_angle  = ((float(line.split(',')[4]))*180)/math.pi + twist_angle
+
+        if file_len - index < 200:
+          bend_angle  = ((float(line.split(',')[5]))*180)/math.pi + bend_angle
       
         """ Do some math to get it in the correct units """
         xval = xval/16384
         yval = yval/16384
         zval = zval/16384
 
-        #wrist = (twist*180)/math.pi
+    
+        xvalues.append(xval)
+        yvalues.append(yval)
+        zvalues.append(zval)
          
  	file = name.split('.')[0]
+
+        """
         BowlingData.objects.create(time_elapsed = time_elapsed, 
 			 	   xvalue = xval, yvalue = yval, 
 				   zvalue = zval, twist = twist, 
 			           bend = bend, frame_num=file)
-        frame = str(int(frame2) + 1)
+        """
+      frame = str(int(frame2) + 1)
+      twist_angle = twist_angle/1490
+      bend_angle = bend_angle/200
      
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
