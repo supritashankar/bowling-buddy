@@ -29,16 +29,16 @@ def data(request, frame1, frame2):
    
   if no_of_files > 21 or no_of_files == 0:
     return render_to_response('plotdata/error.html')
-  
-  frame = frame1 + 1 #Because you storing the index of the array - increment by 1 to get the actual text file
+   
+  frame = str(int(frame1) + 1) #Because you storing the index of the array - increment by 1 to get the actual text file
   for i in range(0,2):
       file = frame + ".TXT" 
       with open('../../sdcard/' + file) as f:
        for line in f:
         time_elapsed = line.split(',')[0]
-        xval 	     = line.split(',')[1]
-        yval 	     = line.split(',')[2]
-        zval         = line.split(',')[3]
+        xval 	     = int(line.split(',')[1])
+        yval 	     = int(line.split(',')[2])
+        zval         = int(line.split(',')[3])
         twist 	     = line.split(',')[4]
         bend         = line.split(',')[5]
       
@@ -47,14 +47,14 @@ def data(request, frame1, frame2):
         yval = yval/16384
         zval = zval/16384
 
-        wrist = (twist*180)/math.pi
-        print wrist 
+        #wrist = (twist*180)/math.pi
+         
  	file = name.split('.')[0]
         BowlingData.objects.create(time_elapsed = time_elapsed, 
 			 	   xvalue = xval, yvalue = yval, 
 				   zvalue = zval, twist = twist, 
 			           bend = bend, frame_num=file)
-        frame = frame2
+        frame = str(int(frame2) + 1)
      
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
