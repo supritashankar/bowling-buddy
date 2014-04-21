@@ -76,9 +76,9 @@ def data(request, frame1, frame2):
 				   zvalue = zval, twist = twist, 
 			           bend = bend, frame_num=file)
         """
-      xv, yv, zv, time_interval, avg_vel = get_velocity(xvalues, yvalues, zvalues, time_elapsed)
+      xv, yv, zv, time_interval, avg_vel = get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len)
       frame = str(int(frame2) + 1)
-      twist_angle = twist_angle/1490
+      twist_angle = twist_angle/file_len
       bend_angle = bend_angle/200
      
   print 'Created objects successfully'
@@ -88,7 +88,7 @@ def data(request, frame1, frame2):
   return render_to_response('plotdata/data.html', {'datachart':chart})
 
 
-def get_velocity(xvalues, yvalues, zvalues, time_elapsed):
+def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len):
 
   """ Return the velocity over time """
 
@@ -117,7 +117,7 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed):
     initial_time = float(time_elapsed[index])   
 
   total_vel = math.sqrt(float(math.pow(velocity_x,2) + math.pow(velocity_y, 2) + math.pow(velocity_z,2)))
-  avg_vel = total_vel/1490.0 
+  avg_vel = total_vel/file_len
   return velx, vely, velz, time_interval, avg_vel
 
 def get_chart():

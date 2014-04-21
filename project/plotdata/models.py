@@ -1,4 +1,12 @@
 from django.db import models
+class InstantaenousVelocity(models.Model):
+
+  """ For a given frame define the instantaenous velocity """
+
+  xvalue        = models.IntegerField()
+  yvalue        = models.IntegerField()
+  zvalue        = models.IntegerField()
+  time_interval = models.IntegerField()
 
 class BowlingData(models.Model):
   """ Defines the model of the data values to be displayed """
@@ -13,12 +21,3 @@ class BowlingData(models.Model):
 
   def __unicode__(self):
     return "This is the values for this " + str(self.id)
-
-class InstantaenousVelocity(models.Model):
-
-  """ For a given frame define the instantaenous velocity """
-
-  xvalue        = models.IntegerField()
-  yvalue        = models.IntegerField()
-  zvalue        = models.IntegerField()
-  time_interval = models.IntegerField()
