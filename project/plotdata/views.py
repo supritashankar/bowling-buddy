@@ -31,6 +31,7 @@ def data(request, frame1, frame2):
   xvalues = []
   yvalues = []
   zvalues = []
+  time_elapsed = []
  
   if no_of_files > 21 or no_of_files == 0:
     return render_to_response('plotdata/error.html')
@@ -48,7 +49,7 @@ def data(request, frame1, frame2):
        bend_angle  = 0.0
 
        for index, line in enumerate(f):
-        time_elapsed = line.split(',')[0]
+        time_elapsed.append(line.split(',')[0])
         xval 	     = int(line.split(',')[1])
         yval 	     = int(line.split(',')[2])
         zval         = int(line.split(',')[3])
@@ -75,6 +76,7 @@ def data(request, frame1, frame2):
 				   zvalue = zval, twist = twist, 
 			           bend = bend, frame_num=file)
         """
+      xv, yv, zv, time_interval, avg_vel = get_velocity(xvalues, yvalues, zvalues, time_elapsed)
       frame = str(int(frame2) + 1)
       twist_angle = twist_angle/1490
       bend_angle = bend_angle/200
@@ -84,6 +86,39 @@ def data(request, frame1, frame2):
 
   chart = get_chart()
   return render_to_response('plotdata/data.html', {'datachart':chart})
+
+
+def get_velocity(xvalues, yvalues, zvalues, time_elapsed):
+
+  """ Return the velocity over time """
+
+  initial_time = 0.0
+  velocity_x = 0.0
+  velocity_y = 0.0
+  velocity_z = 0.0
+
+  velx = []
+  vely = []
+  velz = []
+  time_interval = []
+
+  for index in range(0, len(xvalues)):
+    delta_time = float(time_elapsed[index]) - initial_time
+    velocity_x = (float(xvalues[index]) * delta_time) + velocity_x
+    velocity_y = (float(yvalues[index]) * delta_time) + velocity_y
+    velocity_z = (float(zvalues[index]) * delta_time) + velocity_z
+    
+    if index%100 == 0:
+      velx.append(xvalues[index] * delta_time)
+      vely.append(yvalues[index] * delta_time)
+      velz.append(zvalues[index] * delta_time)
+      time_interval.append(time_elapsed[index])
+
+    initial_time = float(time_elapsed[index])   
+
+  total_vel = math.sqrt(float(math.pow(velocity_x,2) + math.pow(velocity_y, 2) + math.pow(velocity_z,2)))
+  avg_vel = total_vel/1490.0 
+  return velx, vely, velz, time_interval, avg_vel
 
 def get_chart():
 
