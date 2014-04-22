@@ -111,7 +111,7 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len):
     velocity_y = (float(yvalues[index]) * delta_time) + velocity_y
     velocity_z = (float(zvalues[index]) * delta_time) + velocity_z
     
-    if index%100 == 0:
+    if index%300 == 0:
       velx.append(xvalues[index] * delta_time)
       vely.append(yvalues[index] * delta_time)
       velz.append(zvalues[index] * delta_time)
