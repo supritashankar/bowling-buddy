@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response
 from chartit import DataPool, Chart
 from django.contrib.auth.decorators import login_required
 
-from plotdata.models import BowlingData
+from plotdata.models import *
 
 @login_required
 def homepage(request):
@@ -70,22 +70,25 @@ def data(request, frame1, frame2):
          
  	file = name.split('.')[0]
 
-        """
-        BowlingData.objects.create(time_elapsed = time_elapsed, 
-			 	   xvalue = xval, yvalue = yval, 
-				   zvalue = zval, twist = twist, 
-			           bend = bend, frame_num=file)
-        """
-      xv, yv, zv, time_interval, avg_vel = get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len)
+              
+      ids, avg_vel = get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len)
       frame = str(int(frame2) + 1)
       twist_angle = twist_angle/file_len
       bend_angle = bend_angle/200
-     
+
+      swing = BowlingData.objects.create(timetaken = 10,  
+                                 twist = twist_angle, bend = bend_angle,
+                                 frame_num = file, average_velocity = avg_vel)
+      swing.save()
+      for id in ids:
+        vel = InstantaenousVelocity.objects.get(pk=id)
+        swing.velocity.add(vel)
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
 
-  chart = get_chart()
-  return render_to_response('plotdata/data.html', {'datachart':chart})
+  datachart = get_chart()
+  
+  return render_to_response('plotdata/data.html', locals())
 
 
 def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len):
@@ -118,7 +121,20 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len):
 
   total_vel = math.sqrt(float(math.pow(velocity_x,2) + math.pow(velocity_y, 2) + math.pow(velocity_z,2)))
   avg_vel = total_vel/file_len
-  return velx, vely, velz, time_interval, avg_vel
+
+  ids = create_instant_velocity(velx, vely, velz, time_interval)
+  return ids, avg_vel
+
+def create_instant_velocity(velx, vely, velz, time_interval):
+  """ Create instantaenous velocity objects and return it back """
+
+  ids = []
+  for i in range(0, len(velx)):
+    total_vel = math.sqrt(float(math.pow(velx[i],2) + math.pow(vely[i], 2) + math.pow(velz[i],2)))
+    instant_vel = InstantaenousVelocity.objects.create(velocity = total_vel, time_interval = time_interval[i])
+    ids.append(instant_vel.id)
+
+  return ids
 
 def get_chart():
 
@@ -129,11 +145,10 @@ def get_chart():
         DataPool(
            series=
             [{'options': {
-               'source': BowlingData.objects.all()},
+               'source': InstantaenousVelocity.objects.all()},
               'terms': [
-                'time_elapsed',
-                'xvalue',
-                'yvalue']}
+                'time_interval',
+                'velocity']}
              ])
 
 
@@ -144,9 +159,8 @@ def get_chart():
                   'type': 'line',
                   'stacking': False},
                 'terms':{
-                  'time_elapsed': [
-                    'xvalue',
-                    'yvalue']
+                  'time_interval': [
+                    'velocity']
                   }}],
             chart_options =
               {'title': {

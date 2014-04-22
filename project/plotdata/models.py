@@ -2,11 +2,12 @@ from django.db import models
 class InstantaenousVelocity(models.Model):
 
   """ For a given frame define the instantaenous velocity """
-
-  xvalue        = models.IntegerField()
-  yvalue        = models.IntegerField()
-  zvalue        = models.IntegerField()
+  
+  velocity 	= models.DecimalField(max_digits = 9, decimal_places = 3)
   time_interval = models.IntegerField()
+
+  def __unicode__(self):
+    return 'You have created an instant velocity object'
 
 class BowlingData(models.Model):
   """ Defines the model of the data values to be displayed """

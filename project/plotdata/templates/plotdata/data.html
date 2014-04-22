@@ -6,6 +6,8 @@
    <script src="{% static "js/highcharts.js" %}"></script>
    {% load chartit %}
     {{ datachart|load_charts:"container" }}
+    Twist Angle {{twist_angle}}
+    Bend Angle {{bend_angle}}
 </head>
 <body>
     <div id='container'> Chart will be rendered here </div>
