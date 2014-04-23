@@ -166,7 +166,7 @@ def get_chart():
             datasource = bowlingdata,
             series_options =
               [{'options':{
-                  'type': 'line',
+                  'type': 'spline',
                   'stacking': False},
                 'terms':{
                   'time_interval': [
