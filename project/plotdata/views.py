@@ -83,6 +83,8 @@ def data(request, frame1, frame2):
       twist_angle = twist_angle_max - twist_angle_min
       bend_angle = bend_angle_max - bend_angle_min
 
+      twist_angle = round(twist_angle, 2)
+      bend_angle = round(bend_angle, 2)
 
       swing = BowlingData.objects.create(timetaken = 10,  
                                  twist = twist_angle, bend = bend_angle,
@@ -143,7 +145,10 @@ def create_instant_velocity(velx, vely, velz, time_interval):
     total_vel = math.sqrt(float(math.pow(velx[i],2) + math.pow(vely[i], 2) + math.pow(velz[i],2)))
     instant_vel = InstantaenousVelocity.objects.create(velocity = total_vel, time_interval = time_interval[i])
     ids.append(instant_vel.id)
-
+  
+  total_vel = total_vel - 200
+  time_interval = Decimal(time_interval[i]) + 500
+  instant_vel = InstantaenousVelocity.objects.create(velocity = total_vel, time_interval = time_interval)
   return ids
 
 def get_chart():
