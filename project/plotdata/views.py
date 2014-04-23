@@ -53,10 +53,10 @@ def data(request, frame1, frame2):
         xval 	     = int(line.split(',')[1])
         yval 	     = int(line.split(',')[2])
         zval         = int(line.split(',')[3])
-        twist_angle  = ((float(line.split(',')[4]))*180)/math.pi + twist_angle
+        twist_angle  = ((float(line.split(',')[5]))*180)/math.pi + twist_angle
 
         if file_len - index < 200:
-          bend_angle  = ((float(line.split(',')[5]))*180)/math.pi + bend_angle
+          bend_angle  = ((float(line.split(',')[6]))*180)/math.pi + bend_angle
       
         """ Do some math to get it in the correct units """
         xval = xval/16384
