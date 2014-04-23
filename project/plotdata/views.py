@@ -41,10 +41,10 @@ def data(request, frame1, frame2):
   for i in range(0,2):
       file = frame + ".TXT"
  
-      with open('../../sdcard/' + file) as f:
+      with open('../../sdcard/8.TXT') as f:
        file_len = len(f.readlines())
 
-      with open('../../sdcard/' + file) as f:
+      with open('../../sdcard/8.TXT') as f:
 
        twist_angle = 0.0
        bend_angle  = 0.0
@@ -92,6 +92,7 @@ def data(request, frame1, frame2):
       for id in ids:
         vel = InstantaenousVelocity.objects.get(pk=id)
         swing.velocity.add(vel)
+      break
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
 
@@ -120,10 +121,10 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len):
     velocity_y = (Decimal(yvalues[index]) * delta_time) + Decimal(velocity_y)
     velocity_z = (Decimal(zvalues[index]) * delta_time) + Decimal(velocity_z)
     
-    if index%300 == 0:
-      velx.append((Decimal(xvalues[index]) * delta_time) + velocity_x)
-      vely.append((Decimal(yvalues[index]) * delta_time) + velocity_y)
-      velz.append((Decimal(zvalues[index]) * delta_time) + velocity_z)
+    if index%50 == 0:
+      velx.append(velocity_x)
+      vely.append(velocity_y)
+      velz.append(velocity_z)
       time_interval.append(time_elapsed[index])
 
     initial_time = float(time_elapsed[index])   
