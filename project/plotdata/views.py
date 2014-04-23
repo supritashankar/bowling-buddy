@@ -53,10 +53,16 @@ def data(request, frame1, frame2):
         xval 	     = int(line.split(',')[1])
         yval 	     = int(line.split(',')[2])
         zval         = int(line.split(',')[3])
-        twist_angle  = ((float(line.split(',')[5]))*180)/math.pi + twist_angle
+        
+	if index == 0:
+          twist_angle_min = ((float(line.split(',')[5]*180)/math.pi
 
-        if file_len - index < 200:
-          bend_angle  = ((float(line.split(',')[6]))*180)/math.pi + bend_angle
+        if index == 197:
+          bend_angle_min  = ((float(line.split(',')[6]))*180)/math.pi
+
+        if index == 397:
+          bend_angle_max = ((float(line.split(',')[6]*180)/math.pi
+	  twist_angle_max = ((float(line.split(',')[5]*180)/math.pi
       
         """ Do some math to get it in the correct units """
         xval = xval/16384
@@ -73,13 +79,15 @@ def data(request, frame1, frame2):
               
       ids, avg_vel = get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len)
       frame = str(int(frame2) + 1)
-      twist_angle = twist_angle/file_len
-      bend_angle = bend_angle/200
+      twist_angle = twist_angle_max - twist_angle_min
+      bend_angle = bend_angle_max - bend_angle_min
+
 
       swing = BowlingData.objects.create(timetaken = 10,  
                                  twist = twist_angle, bend = bend_angle,
                                  frame_num = file, average_velocity = avg_vel)
       swing.save()
+
       for id in ids:
         vel = InstantaenousVelocity.objects.get(pk=id)
         swing.velocity.add(vel)
