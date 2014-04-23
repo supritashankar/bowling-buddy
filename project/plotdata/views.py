@@ -1,5 +1,6 @@
 import math
 import os, os.path
+from decimal import *
 
 from django.shortcuts import render
 from django.shortcuts import render_to_response
@@ -55,19 +56,19 @@ def data(request, frame1, frame2):
         zval         = int(line.split(',')[3])
         
 	if index == 0:
-          twist_angle_min = ((float(line.split(',')[5]*180)/math.pi
+          twist_angle_min = ((float(line.split(',')[5]))*180)/math.pi
 
         if index == 197:
-          bend_angle_min  = ((float(line.split(',')[6]))*180)/math.pi
+          bend_angle_min  = ((float(line.split(',')[6].rstrip()))*180)/math.pi
 
         if index == 397:
-          bend_angle_max = ((float(line.split(',')[6]*180)/math.pi
-	  twist_angle_max = ((float(line.split(',')[5]*180)/math.pi
+          bend_angle_max = ((float(line.split(',')[6].rstrip())*180)/math.pi)
+	  twist_angle_max = ((float(line.split(',')[5].rstrip())*180)/math.pi)
       
         """ Do some math to get it in the correct units """
-        xval = xval/16384
-        yval = yval/16384
-        zval = zval/16384
+        xval = Decimal(xval)/16384
+        yval = Decimal(yval)/16384
+        zval = Decimal(zval)/16384
 
     
         xvalues.append(xval)
@@ -114,15 +115,15 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len):
   time_interval = []
 
   for index in range(0, len(xvalues)):
-    delta_time = float(time_elapsed[index]) - initial_time
-    velocity_x = (float(xvalues[index]) * delta_time) + velocity_x
-    velocity_y = (float(yvalues[index]) * delta_time) + velocity_y
-    velocity_z = (float(zvalues[index]) * delta_time) + velocity_z
+    delta_time = Decimal(time_elapsed[index]) - Decimal(initial_time)
+    velocity_x = (Decimal(xvalues[index]) * delta_time) + Decimal(velocity_x)
+    velocity_y = (Decimal(yvalues[index]) * delta_time) + Decimal(velocity_y)
+    velocity_z = (Decimal(zvalues[index]) * delta_time) + Decimal(velocity_z)
     
     if index%300 == 0:
-      velx.append(xvalues[index] * delta_time)
-      vely.append(yvalues[index] * delta_time)
-      velz.append(zvalues[index] * delta_time)
+      velx.append((Decimal(xvalues[index]) * delta_time) + velocity_x)
+      vely.append((Decimal(yvalues[index]) * delta_time) + velocity_y)
+      velz.append((Decimal(zvalues[index]) * delta_time) + velocity_z)
       time_interval.append(time_elapsed[index])
 
     initial_time = float(time_elapsed[index])   
