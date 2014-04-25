@@ -146,8 +146,6 @@ def create_instant_velocity(velx, vely, velz, time_interval):
     instant_vel = InstantaenousVelocity.objects.create(velocity = total_vel, time_interval = time_interval[i])
     ids.append(instant_vel.id)
   
-  total_vel = total_vel - 200
-  time_interval = Decimal(time_interval[i]) + 500
   instant_vel = InstantaenousVelocity.objects.create(velocity = total_vel, time_interval = time_interval)
   return ids
 
