@@ -44,14 +44,14 @@ def velocity(request, frame):
   angles = Angles.objects.all()
   angles.delete() 
   
-  frame = str(int(frame) + 1) #Because you storing the index of the array - increment by 1 to get the actual text file
+  frame = str(int(frame)) #Because you storing the index of the array - increment by 1 to get the actual text file
   for i in range(0,2):
       file = frame + ".TXT"
  
-      with open('../../sdcard/3.TXT') as f:
+      with open('../../sdcard/' + file) as f:
        file_len = len(f.readlines())
 
-      with open('../../sdcard/3.TXT') as f:
+      with open('../../sdcard/' + file) as f:
 
        for index, line in enumerate(f):
         time_elapsed.append(line.split(',')[0])
