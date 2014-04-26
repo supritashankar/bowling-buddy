@@ -46,25 +46,15 @@ def data(request, frame1, frame2):
 
       with open('../../sdcard/8.TXT') as f:
 
-       twist_angle = 0.0
-       bend_angle  = 0.0
-
        for index, line in enumerate(f):
         time_elapsed.append(line.split(',')[0])
         xval 	     = int(line.split(',')[1])
         yval 	     = int(line.split(',')[2])
         zval         = int(line.split(',')[3])
-        
-	if index == 0:
-          twist_angle_min = ((float(line.split(',')[5]))*180)/math.pi
+        twist.append(((float(line.split(',')[5]))*180)/math.pi)
+        bend.append((float(line.split(',')[6].rstrip())*180)/math.pi)
 
-        if index == 197:
-          bend_angle_min  = ((float(line.split(',')[6].rstrip()))*180)/math.pi
-
-        if index == 397:
-          bend_angle_max = ((float(line.split(',')[6].rstrip())*180)/math.pi)
-	  twist_angle_max = ((float(line.split(',')[5].rstrip())*180)/math.pi)
-      
+     
         """ Do some math to get it in the correct units """
         xval = Decimal(xval)/16384
         yval = Decimal(yval)/16384
@@ -78,14 +68,9 @@ def data(request, frame1, frame2):
  	file = name.split('.')[0]
 
               
-      ids, avg_vel = get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len)
+      ids, avg_vel = get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len, twist, bend)
       frame = str(int(frame2) + 1)
-      twist_angle = twist_angle_max - twist_angle_min
-      bend_angle = bend_angle_max - bend_angle_min
-
-      twist_angle = round(twist_angle, 2)
-      bend_angle = round(bend_angle, 2)
-
+      """
       swing = BowlingData.objects.create(timetaken = 10,  
                                  twist = twist_angle, bend = bend_angle,
                                  frame_num = file, average_velocity = avg_vel)
@@ -94,16 +79,19 @@ def data(request, frame1, frame2):
       for id in ids:
         vel = InstantaenousVelocity.objects.get(pk=id)
         swing.velocity.add(vel)
+      """
       break
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
 
-  datachart = get_chart()
+  velocitychart = get_velocity_chart()
+  anglechart = get_angle_chart()
+  #distancechart = get_distance_chart()
   
   return render_to_response('plotdata/data.html', locals())
 
 
-def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len):
+def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len, twist, bend):
 
   """ Return the velocity over time """
 
@@ -134,22 +122,22 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len):
   total_vel = math.sqrt(float(math.pow(velocity_x,2) + math.pow(velocity_y, 2) + math.pow(velocity_z,2)))
   avg_vel = total_vel/file_len
 
-  ids = create_instant_velocity(velx, vely, velz, time_interval)
+  ids = create_instant_velocity(velx, vely, velz, time_interval, twist, bend)
   return ids, avg_vel
 
-def create_instant_velocity(velx, vely, velz, time_interval):
+def create_instant_velocity(velx, vely, velz, time_interval, twist, bend):
   """ Create instantaenous velocity objects and return it back """
 
   ids = []
   for i in range(0, len(velx)):
     total_vel = math.sqrt(float(math.pow(velx[i],2) + math.pow(vely[i], 2) + math.pow(velz[i],2)))
     instant_vel = InstantaenousVelocity.objects.create(velocity = total_vel, time_interval = time_interval[i])
+    angle = Angles.objects.create(time_interval = time_interval[i], twist = twist[i], bend = bend[i])
     ids.append(instant_vel.id)
   
-  instant_vel = InstantaenousVelocity.objects.create(velocity = total_vel, time_interval = time_interval)
   return ids
 
-def get_chart():
+def get_velocity_chart():
 
   """ Return the data in the proper format needed for the charts """
 
@@ -182,6 +170,42 @@ def get_chart():
                     'title': {
                        'text': 'Time elapsed'}}}) 
   return cht
+
+def get_angle_chart():
+
+  """ Return the data in the proper format needed for the charts """
+
+
+  anglesdata = \
+        DataPool(
+           series=
+            [{'options': {
+               'source': Angles.objects.all()},
+              'terms': [
+                'time_interval',
+                'twist',
+	        'bend']}
+             ])
+
+
+  cht = Chart(
+            datasource = anglesdata,
+            series_options =
+              [{'options':{
+                  'type': 'spline',
+                  'stacking': False},
+                'terms':{
+                  'time_interval': [
+                    'twist', 'bend']
+                  }}],
+            chart_options =
+              {'title': {
+                   'text': 'Bowling Data of x-axis and y-axis'},
+               'xAxis': {
+                       'title': {
+                       'text': 'Time elapsed'}}})
+  return cht
+
 
 @login_required
 def save(request, query):
