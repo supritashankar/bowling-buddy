@@ -141,7 +141,7 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len, twist, bend)
      distancex.append(distance_x)
      distancey.append(distance_y)
      distancez.append(distance_z)
-     time_interval.append(round(Decimal(incremental_time)/1000,2))
+     time_interval.append(round(Decimal(incremental_time)/1000,1))
 
     initial_time = float(time_elapsed[index])   
 
