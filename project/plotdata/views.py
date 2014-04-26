@@ -48,10 +48,10 @@ def velocity(request, frame):
   for i in range(0,2):
       file = frame + ".TXT"
  
-      with open('../../sdcard/7.TXT') as f:
+      with open('../../sdcard/3.TXT') as f:
        file_len = len(f.readlines())
 
-      with open('../../sdcard/7.TXT') as f:
+      with open('../../sdcard/3.TXT') as f:
 
        for index, line in enumerate(f):
         time_elapsed.append(line.split(',')[0])
@@ -134,14 +134,14 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len, twist, bend)
     distance_y = (Decimal(velocity_y) * delta_time) + Decimal(distance_y)
     distance_z = (Decimal(velocity_z) * delta_time) + Decimal(distance_z)
    
-    velx.append(velocity_x)
-    vely.append(velocity_y)
-    velz.append(velocity_z)
-    distancex.append(distance_x)
-    distancey.append(distance_y)
-    distancez.append(distance_z)
-
-    time_interval.append(round(Decimal(incremental_time)/1000,2))
+    if index%5 == 0:
+     velx.append(velocity_x)
+     vely.append(velocity_y)
+     velz.append(velocity_z)
+     distancex.append(distance_x)
+     distancey.append(distance_y)
+     distancez.append(distance_z)
+     time_interval.append(round(Decimal(incremental_time)/1000,2))
 
     initial_time = float(time_elapsed[index])   
 
