@@ -111,11 +111,11 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len, twist, bend)
     velocity_y = (Decimal(yvalues[index]) * delta_time) + Decimal(velocity_y)
     velocity_z = (Decimal(zvalues[index]) * delta_time) + Decimal(velocity_z)
     
-    if index%50 == 0:
+    if index%5 == 0:
       velx.append(velocity_x)
       vely.append(velocity_y)
       velz.append(velocity_z)
-      time_interval.append(time_elapsed[index])
+      time_interval.append(round(Decimal(time_elapsed[index])/1000,2))
 
     initial_time = float(time_elapsed[index])   
 
