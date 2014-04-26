@@ -20,7 +20,7 @@ def homepage(request):
   return render_to_response('plotdata/homepage.html', locals())
 
 @login_required
-def data(request, frame1, frame2):
+def velocity(request, frame):
 
   """ Data that will display results of a particular round """
   """ For SD card on Desktop f = open("/Volumes/NO\ NAME/1.txt", "r") """
@@ -36,8 +36,11 @@ def data(request, frame1, frame2):
  
   if no_of_files > 21 or no_of_files == 0:
     return render_to_response('plotdata/error.html')
-   
-  frame = str(int(frame1) + 1) #Because you storing the index of the array - increment by 1 to get the actual text file
+  
+  velocity = InstantaenousVelocity.objects.all()
+  velocity.delete()
+ 
+  frame = str(int(frame) + 1) #Because you storing the index of the array - increment by 1 to get the actual text file
   for i in range(0,2):
       file = frame + ".TXT"
  
@@ -69,7 +72,6 @@ def data(request, frame1, frame2):
 
               
       ids, avg_vel = get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len, twist, bend)
-      frame = str(int(frame2) + 1)
       """
       swing = BowlingData.objects.create(timetaken = 10,  
                                  twist = twist_angle, bend = bend_angle,
@@ -84,12 +86,18 @@ def data(request, frame1, frame2):
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
 
-  velocitychart = get_velocity_chart()
-  anglechart = get_angle_chart()
-  #distancechart = get_distance_chart()
-  
+  datachart = get_velocity_chart()
+ 
   return render_to_response('plotdata/data.html', locals())
 
+def distance(request, frame):
+  datachart = get_distance_chart()
+  return render_to_response('plotdata/data.html', locals())
+
+def angles(request, frame):
+  """ Get angle chart """
+  datachart = get_angle_chart()
+  return render_to_response('plotdata/data.html', locals())
 
 def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len, twist, bend):
 
@@ -111,11 +119,10 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len, twist, bend)
     velocity_y = (Decimal(yvalues[index]) * delta_time) + Decimal(velocity_y)
     velocity_z = (Decimal(zvalues[index]) * delta_time) + Decimal(velocity_z)
     
-    if index%5 == 0:
-      velx.append(velocity_x)
-      vely.append(velocity_y)
-      velz.append(velocity_z)
-      time_interval.append(round(Decimal(time_elapsed[index])/1000,2))
+    velx.append(velocity_x)
+    vely.append(velocity_y)
+    velz.append(velocity_z)
+    time_interval.append(round(Decimal(time_elapsed[index])/1000,2))
 
     initial_time = float(time_elapsed[index])   
 
