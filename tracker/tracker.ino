@@ -28,14 +28,7 @@ THE SOFTWARE.
 */
 
 // todo:
-// button-state = 0 is too sensitive for first press?
-// 5 seconds too long or short?
 // need tracker calibration once on glove
-
-// notes:
-// use charging push button as reset for error or SD overflow
-// 100ohm resistor for green LED
-// 100kohm resistor for record button
 
 #include <SD.h>
 #include "Wire.h"
@@ -47,15 +40,15 @@ THE SOFTWARE.
 #define ERROR_LED_PIN 11    // pin of on-board teensy LED (used for errors)
 #define GREEN_LED_PIN 16    // pin of green LED used to signify correct startup
 #define BUTTON_PIN    17    // pin of the the record push button
-#define RECORD_LIMIT  5000  // time in milliseconds to record swing 
-#define MAX_SWINGS    5     // how many swings we will record on the SD card
+#define RECORD_LIMIT  4000  // time in milliseconds to record swing 
+#define MAX_SWINGS    21    // how many swings we will record on the SD card
 // NOTE: below numbers found using MPU6050_calibration.ino
-#define X_ACCEL_OFF   -1177 // accelerometer X offset
-#define Y_ACCEL_OFF   1473  // accelerometer Y offset
-#define Z_ACCEL_OFF   1339  // accelerometer Z offset
-#define X_GYRO_OFF    -22   // gyroscope X offset
+#define X_ACCEL_OFF   -965  // accelerometer X offset
+#define Y_ACCEL_OFF   1535  // accelerometer Y offset
+#define Z_ACCEL_OFF   1337  // accelerometer Z offset
+#define X_GYRO_OFF    -19   // gyroscope X offset
 #define Y_GYRO_OFF    8     // gyroscope Y offset
-#define Z_GYRO_OFF    165   // gyroscope Z offset
+#define Z_GYRO_OFF    163   // gyroscope Z offset
 
 bool error = false; // used to signify specific errors
 
@@ -112,7 +105,6 @@ void setup() {
   pinMode(10, OUTPUT);            // necessary for SD library to work
   
   Wire.begin();
-  Serial.begin(19200); 
   mpu.initialize();
   device_status = mpu.dmpInitialize();
   mpu.setXGyroOffset(X_GYRO_OFF);
@@ -142,8 +134,14 @@ void setup() {
       }
     }
     // remove old files
-    SD.remove("1.TXT"); SD.remove("2.TXT"); SD.remove("3.TXT");
-    SD.remove("4.TXT"); SD.remove("5.TXT");
+    for (int i = 1; i <= MAX_SWINGS; i++) {
+      String temp = "";
+      temp.concat(i);
+      temp += ".TXT";
+      char file_name[temp.length() + 1];
+      temp.toCharArray(file_name, sizeof(file_name));
+      SD.remove(file_name);
+    }
     digitalWrite(GREEN_LED_PIN, HIGH); // all-clear signal
   }
 }
@@ -161,6 +159,7 @@ void loop() {
       // flash error LED to user
       blink_state = !blink_state;
       digitalWrite(ERROR_LED_PIN, blink_state);
+      delay(250);
     } else {
       digitalWrite(ERROR_LED_PIN, HIGH); // hard-reset needed 
     }
@@ -183,27 +182,15 @@ void loop() {
    if (button_state != last_button_state) {
       if (button_state == HIGH) {
         // set flag and get start of swing recording
-        Serial.print("start...");
         record = true;
         record_start = record_time; // checkpoint time
         // open swing file
-        switch (swing_count) {
-          case 1:
-            results = SD.open("1.TXT", FILE_WRITE);
-            break;
-          case 2:
-            results = SD.open("2.TXT", FILE_WRITE);
-            break;
-          case 3:
-            results = SD.open("3.TXT", FILE_WRITE);
-            break;
-          case 4:
-            results = SD.open("4.TXT", FILE_WRITE);
-            break;
-          case 5:
-            results = SD.open("5.TXT", FILE_WRITE);
-            break;
-        }
+        String temp = "";
+        temp.concat(swing_count);
+        temp += ".TXT";
+        char file_name[temp.length() + 1];
+        temp.toCharArray(file_name, sizeof(file_name));
+        results = SD.open(file_name, FILE_WRITE);
         if (!results) {
           error = true;
           return; 
@@ -216,7 +203,6 @@ void loop() {
     // see if we are done recording
     if ((record_time - record_start) >= RECORD_LIMIT) {
       record = false;
-      Serial.println("done");
       swing_count++; // goto next swing
       // close results file
       results.close();
