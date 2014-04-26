@@ -22,9 +22,9 @@ class Angles(models.Model):
 class DistancePlot(models.Model):
   """ To plot the distance """
 
-  distancex = models.DecimalField(max_digits = 9, decimal_places = 3)
-  distancey = models.DecimalField(max_digits = 9, decimal_places = 3)
-  distancez = models.DecimalField(max_digits = 9, decimal_places = 3)
+  distancex = models.DecimalField(max_digits = 15, decimal_places = 3)
+  distancey = models.DecimalField(max_digits = 15, decimal_places = 3)
+  distancez = models.DecimalField(max_digits = 15, decimal_places = 3)
   time_interval = models.IntegerField()
 
   def __unicode__(self):
