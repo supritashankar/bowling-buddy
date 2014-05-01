@@ -9,11 +9,11 @@ class InstantaenousVelocity(models.Model):
   def __unicode__(self):
     return 'You have created an instant velocity object'
 
-class Angles(models.Model):
+class AnglePlot(models.Model):
   """ To display the angle for the graph """
   
   twist         = models.DecimalField(max_digits = 9, decimal_places = 3)
-  bend          = models.DecimalField(max_digits = 9, decimal_places = 3)
+  bend          = models.DecimalField(max_digits = 9, decimal_places = 3, null=True)
   time_interval = models.DecimalField(max_digits = 9, decimal_places = 3)
 
   def __unicode__(self):
@@ -36,8 +36,10 @@ class BowlingData(models.Model):
   timetaken        = models.IntegerField()
   frame_num        = models.CharField(max_length = 2)
   velocity         = models.ManyToManyField(InstantaenousVelocity)
+  distances        = models.ManyToManyField(DistancePlot)
+  angles           = models.ManyToManyField(AnglePlot)
   average_velocity = models.DecimalField(max_digits = 9, decimal_places = 3)
   created          = models.DateField(auto_now_add=True)
 
   def __unicode__(self):
-    return "This is the values for this " + str(self.id)
+    return "Values for " + str(self.frame_num) + " has been created"
