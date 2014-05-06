@@ -41,17 +41,17 @@ def velocity(request, frame):
   velocity.delete()
   distance = DistancePlot.objects.all()
   distance.delete()
-  angles = Angles.objects.all()
+  angles = AnglePlot.objects.all()
   angles.delete() 
   
   frame = str(int(frame)) #Because you storing the index of the array - increment by 1 to get the actual text file
   for i in range(0,2):
       file = frame + ".TXT"
  
-      with open('../../sdcard/' + file) as f:
+      with open('../../sdcard1/' + file) as f:
        file_len = len(f.readlines())
 
-      with open('../../sdcard/' + file) as f:
+      with open('../../sdcard1/' + file) as f:
 
        for index, line in enumerate(f):
         time_elapsed.append(line.split(',')[0])
@@ -138,10 +138,11 @@ def get_velocity(xvalues, yvalues, zvalues, time_elapsed, file_len, twist, bend)
      velx.append(velocity_x)
      vely.append(velocity_y)
      velz.append(velocity_z)
+     time_interval.append(round(Decimal(incremental_time)/1000,1))
+    if index%40 == 0:
      distancex.append(distance_x)
      distancey.append(distance_y)
      distancez.append(distance_z)
-     time_interval.append(round(Decimal(incremental_time)/1000,1))
 
     initial_time = float(time_elapsed[index])   
 
@@ -158,8 +159,13 @@ def create_instant_velocity(velx, vely, velz, time_interval, twist, bend, distan
   for i in range(0, len(velx)):
     total_vel   = math.sqrt(float(math.pow(velx[i],2) + math.pow(vely[i], 2) + math.pow(velz[i],2)))
     instant_vel = InstantaenousVelocity.objects.create(velocity = total_vel, time_interval = time_interval[i])
-    angle       = Angles.objects.create(time_interval = time_interval[i], twist = twist[i], bend = bend[i])
-    distance    = DistancePlot.objects.create(time_interval = time_interval[i], distancex = distancex[i], distancey = distancey[i], distancez = distancez[i]) 
+    if i < 40:
+      angle       = AnglePlot.objects.create(time_interval = time_interval[i], twist = twist[i], bend = None)
+    else:
+      angle       = AnglePlot.objects.create(time_interval = time_interval[i], twist = twist[i], bend = bend[i])
+    print len(distancex)
+    if i < 9:
+     distance    = DistancePlot.objects.create(time_interval = time_interval[i], distancex = distancex[i], distancey = distancey[i], distancez = distancez[i]) 
     ids.append(instant_vel.id)
   
   return ids
@@ -207,7 +213,7 @@ def get_angle_chart():
         DataPool(
            series=
             [{'options': {
-               'source': Angles.objects.all()},
+               'source': AnglePlot.objects.all()},
               'terms': [
                 'time_interval',
                 'twist',
@@ -273,7 +279,7 @@ def save(request, query):
  
   for frame in frames:
     file = frame + ".TXT"
-    with open('../../sdcard/' + file) as f:
+    with open('../../sdcard1/' + file) as f:
        for line in f:
         time_elapsed = line.split(',')[0]
         xval         = line.split(',')[1]
