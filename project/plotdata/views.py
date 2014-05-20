@@ -36,14 +36,7 @@ def velocity(request, frame):
  
   if no_of_files > 21 or no_of_files == 0:
     return render_to_response('plotdata/error.html')
-  
-  velocity = InstantaenousVelocity.objects.all()
-  velocity.delete()
-  distance = DistancePlot.objects.all()
-  distance.delete()
-  angles = AnglePlot.objects.all()
-  angles.delete() 
-  
+   
   frame = str(int(frame)) #Because you storing the index of the array - increment by 1 to get the actual text file
   for i in range(0,2):
       file = frame + ".TXT"
