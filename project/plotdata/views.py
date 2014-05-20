@@ -79,7 +79,8 @@ def velocity(request, frame):
         vel = InstantaenousVelocity.objects.get(pk=id)
         swing.velocity.add(vel)
       """
-      break
+
+
   print 'Created objects successfully'
   print len(BowlingData.objects.all())
 
@@ -156,7 +157,7 @@ def create_instant_velocity(velx, vely, velz, time_interval, twist, bend, distan
       angle       = AnglePlot.objects.create(time_interval = time_interval[i], twist = twist[i], bend = None)
     else:
       angle       = AnglePlot.objects.create(time_interval = time_interval[i], twist = twist[i], bend = bend[i])
-    print len(distancex)
+    
     if i < 9:
      distance    = DistancePlot.objects.create(time_interval = time_interval[i], distancex = distancex[i], distancey = distancey[i], distancez = distancez[i]) 
     ids.append(instant_vel.id)
@@ -166,7 +167,6 @@ def create_instant_velocity(velx, vely, velz, time_interval, twist, bend, distan
 def get_velocity_chart():
 
   """ Return the data in the proper format needed for the charts """
-
 
   bowlingdata = \
         DataPool(
@@ -200,7 +200,6 @@ def get_velocity_chart():
 def get_angle_chart():
 
   """ Return the data in the proper format needed for the charts """
-
 
   anglesdata = \
         DataPool(
@@ -265,37 +264,4 @@ def get_distance_chart():
                        'title': {
                        'text': 'Time elapsed'}}})
   return cht 
-@login_required
-def save(request, query):
-  """ Function that save the frames in the DB for future retrieval"""
-  frames = query.split('&')
- 
-  for frame in frames:
-    file = frame + ".TXT"
-    with open('../../sdcard1/' + file) as f:
-       for line in f:
-        time_elapsed = line.split(',')[0]
-        xval         = line.split(',')[1]
-        yval         = line.split(',')[2]
-        zval         = line.split(',')[3]
-        twist        = line.split(',')[4]
-        bend         = line.split(',')[5]
 
-        """ Do some math to get it in the correct units """
-        xval = xval/16384
-        yval = yval/16384
-        zval = zval/16384
-
-        wrist = (twist*180)/math.pi
-        BowlingData.objects.create(time_elapsed = time_elapsed, 
- 				   xvalue = xval, yvalue = yval, 
-				   zvalue = zval, twist = twist, 
-				   bend = bend, frame_num = frame)
- 
-  return render_to_response('plotdata/save.html')
-
-@login_required
-def search(request, from_date, to_date):
-  """ Given a from_date and to_date - display all the frames of that given frame """
-
-  return render_to_response('plotdata/search.html') 
